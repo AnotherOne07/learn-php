@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: project-alpha
+    restart: always
+    working_dir: /var/www
+    volumes:
+      - ../src:/var/www
+  nginx:
+    image: nginx:1.19-alpine
+    # container-name: alpha-nginx
+    restart: always
+    ports:
+      - "8000:80"
+    volumes:
+      - ../src:/var/www
+      - ./nginx:/etc/nginx/conf.d
+  db:
+    image: mysql:5.7
+    container_name: db-alpha-project
+    restart: always
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    environment:
+      MYSQL_DATABASE: mysql
+      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    volumes:
+      - ./docker/mysql/dbfiles:/var/lib/mysql
